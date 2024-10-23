@@ -1,0 +1,201 @@
+StockSymbol,StockName,LowPrice,HighPrice
+GOOGL,Alphabet Inc.,173,213
+GOOGL,Alphabet Inc.,152,162
+GOOGL,Alphabet Inc.,300,360
+UBER,Uber Technologies,196,220
+ORCL,Oracle Corp.,180,210
+UBER,Uber Technologies,300,366
+ADBE,Adobe Inc.,280,369
+TSLA,Tesla Inc.,50,129
+MSFT,Microsoft Corp.,50,144
+SNAP,Snap Inc.,150,221
+TSLA,Tesla Inc.,150,238
+MSFT,Microsoft Corp.,180,270
+NFLX,Netflix Inc.,195,272
+NVDA,NVIDIA Corp.,280,339
+SNAP,Snap Inc.,300,353
+AMZN,Amazon.com Inc.,300,317
+CRM,Salesforce Inc.,50,97
+SNAP,Snap Inc.,50,95
+NVDA,NVIDIA Corp.,169,266
+NFLX,Netflix Inc.,280,362
+TSLA,Tesla Inc.,50,109
+META,Meta Platforms,150,241
+INTC,Intel Corp.,300,313
+ORCL,Oracle Corp.,178,243
+NFLX,Netflix Inc.,300,398
+CSCO,Cisco Systems,153,208
+CRM,Salesforce Inc.,150,221
+GOOGL,Alphabet Inc.,180,206
+PINS,Pinterest Inc.,300,385
+DIS,Walt Disney Co.,180,235
+MSFT,Microsoft Corp.,280,346
+NVDA,NVIDIA Corp.,300,398
+NFLX,Netflix Inc.,300,362
+MSFT,Microsoft Corp.,180,244
+META,Meta Platforms,180,248
+GOOGL,Alphabet Inc.,300,364
+ORCL,Oracle Corp.,101,187
+DIS,Walt Disney Co.,148,159
+META,Meta Platforms,50,128
+BABA,Alibaba Group,170,230
+META,Meta Platforms,145,198
+MSFT,Microsoft Corp.,300,370
+ORCL,Oracle Corp.,180,220
+PINS,Pinterest Inc.,50,72
+IBM,International Business Machines,180,220
+PINS,Pinterest Inc.,181,225
+DIS,Walt Disney Co.,280,374
+GOOGL,Alphabet Inc.,280,339
+CRM,Salesforce Inc.,50,145
+SNAP,Snap Inc.,150,162
+MSFT,Microsoft Corp.,150,205
+SNAP,Snap Inc.,280,379
+GOOGL,Alphabet Inc.,280,344
+ORCL,Oracle Corp.,50,150
+NVDA,NVIDIA Corp.,116,157
+NFLX,Netflix Inc.,300,397
+AAPL,Apple Inc.,189,289
+CRM,Salesforce Inc.,280,363
+INTC,Intel Corp.,300,327
+TSLA,Tesla Inc.,300,345
+BABA,Alibaba Group,300,340
+SNAP,Snap Inc.,300,310
+TSLA,Tesla Inc.,50,76
+PINS,Pinterest Inc.,124,166
+SPOT,Spotify Technology,180,192
+INTC,Intel Corp.,150,189
+BABA,Alibaba Group,180,207
+META,Meta Platforms,180,256
+META,Meta Platforms,280,290
+DIS,Walt Disney Co.,150,216
+SNAP,Snap Inc.,50,112
+AMZN,Amazon.com Inc.,150,186
+ADBE,Adobe Inc.,50,94
+NVDA,NVIDIA Corp.,300,341
+CRM,Salesforce Inc.,50,63
+DIS,Walt Disney Co.,162,233
+CRM,Salesforce Inc.,150,167
+DIS,Walt Disney Co.,150,197
+GOOGL,Alphabet Inc.,101,139
+AMZN,Amazon.com Inc.,150,240
+META,Meta Platforms,300,312
+MSFT,Microsoft Corp.,126,139
+CSCO,Cisco Systems,150,196
+SNAP,Snap Inc.,180,227
+ORCL,Oracle Corp.,50,134
+DIS,Walt Disney Co.,50,74
+SNAP,Snap Inc.,280,340
+NFLX,Netflix Inc.,280,369
+BABA,Alibaba Group,180,223
+PINS,Pinterest Inc.,153,225
+SNAP,Snap Inc.,280,375
+NVDA,NVIDIA Corp.,280,357
+SNAP,Snap Inc.,192,259
+META,Meta Platforms,180,208
+SNAP,Snap Inc.,280,348
+CSCO,Cisco Systems,300,375
+SPOT,Spotify Technology,280,309
+NFLX,Netflix Inc.,180,266
+CSCO,Cisco Systems,300,384
+BABA,Alibaba Group,163,206
+GOOGL,Alphabet Inc.,280,362
+IBM,International Business Machines,50,129
+INTC,Intel Corp.,150,239
+AMZN,Amazon.com Inc.,157,167
+UBER,Uber Technologies,300,321
+NVDA,NVIDIA Corp.,195,209
+CSCO,Cisco Systems,150,233
+UBER,Uber Technologies,280,335
+CRM,Salesforce Inc.,50,84
+PINS,Pinterest Inc.,50,104
+CRM,Salesforce Inc.,150,216
+SNAP,Snap Inc.,300,365
+DIS,Walt Disney Co.,141,224
+AMZN,Amazon.com Inc.,280,347
+BABA,Alibaba Group,180,267
+UBER,Uber Technologies,280,324
+PINS,Pinterest Inc.,280,364
+CRM,Salesforce Inc.,50,97
+CRM,Salesforce Inc.,160,246
+GOOGL,Alphabet Inc.,50,125
+PINS,Pinterest Inc.,280,343
+PINS,Pinterest Inc.,300,393
+DIS,Walt Disney Co.,180,252
+PINS,Pinterest Inc.,300,385
+CSCO,Cisco Systems,180,257
+SPOT,Spotify Technology,180,226
+INTC,Intel Corp.,50,130
+CSCO,Cisco Systems,300,387
+GOOGL,Alphabet Inc.,280,319
+NVDA,NVIDIA Corp.,300,393
+UBER,Uber Technologies,118,192
+ADBE,Adobe Inc.,50,82
+AAPL,Apple Inc.,300,313
+AAPL,Apple Inc.,280,356
+SPOT,Spotify Technology,300,356
+CRM,Salesforce Inc.,50,129
+DIS,Walt Disney Co.,180,267
+ADBE,Adobe Inc.,280,355
+ORCL,Oracle Corp.,50,91
+CRM,Salesforce Inc.,102,199
+INTC,Intel Corp.,280,319
+ORCL,Oracle Corp.,50,97
+UBER,Uber Technologies,191,225
+GOOGL,Alphabet Inc.,132,210
+NVDA,NVIDIA Corp.,180,201
+AMZN,Amazon.com Inc.,180,258
+PINS,Pinterest Inc.,50,92
+ADBE,Adobe Inc.,101,161
+MSFT,Microsoft Corp.,300,396
+NFLX,Netflix Inc.,167,255
+ORCL,Oracle Corp.,180,200
+GOOGL,Alphabet Inc.,184,253
+IBM,International Business Machines,194,294
+AAPL,Apple Inc.,150,243
+ORCL,Oracle Corp.,113,206
+IBM,International Business Machines,300,369
+AMZN,Amazon.com Inc.,131,207
+META,Meta Platforms,191,289
+SPOT,Spotify Technology,150,222
+TSLA,Tesla Inc.,180,277
+INTC,Intel Corp.,180,224
+NFLX,Netflix Inc.,300,343
+DIS,Walt Disney Co.,280,338
+DIS,Walt Disney Co.,180,257
+SNAP,Snap Inc.,124,213
+NFLX,Netflix Inc.,153,236
+INTC,Intel Corp.,50,90
+DIS,Walt Disney Co.,280,327
+GOOGL,Alphabet Inc.,300,364
+DIS,Walt Disney Co.,150,216
+CRM,Salesforce Inc.,180,273
+SPOT,Spotify Technology,50,112
+INTC,Intel Corp.,300,396
+SPOT,Spotify Technology,280,313
+TSLA,Tesla Inc.,180,235
+GOOGL,Alphabet Inc.,180,212
+NVDA,NVIDIA Corp.,180,276
+PINS,Pinterest Inc.,142,222
+ORCL,Oracle Corp.,50,128
+NVDA,NVIDIA Corp.,300,397
+IBM,International Business Machines,50,137
+INTC,Intel Corp.,300,330
+GOOGL,Alphabet Inc.,300,396
+CSCO,Cisco Systems,280,352
+DIS,Walt Disney Co.,50,135
+TSLA,Tesla Inc.,280,331
+AMZN,Amazon.com Inc.,280,367
+ORCL,Oracle Corp.,150,218
+PINS,Pinterest Inc.,100,144
+NFLX,Netflix Inc.,300,390
+SNAP,Snap Inc.,280,327
+AAPL,Apple Inc.,280,359
+NFLX,Netflix Inc.,150,219
+TSLA,Tesla Inc.,50,101
+AMZN,Amazon.com Inc.,300,346
+NFLX,Netflix Inc.,280,359
+AMZN,Amazon.com Inc.,150,236
+DIS,Walt Disney Co.,180,201
+GOOGL,Alphabet Inc.,150,207
+UBER,Uber Technologies,50,146

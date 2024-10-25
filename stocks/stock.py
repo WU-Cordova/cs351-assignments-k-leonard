@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Any, Optional, Tuple, List
 from datastructures.avltree import AVLNode, AVLTree
 import csv
-
+#-------------------------------------
 @dataclass
 class StockNode:
     stock_symbol: str
@@ -37,9 +37,10 @@ class StockPriceManager:
     def __init__(self):
         self._tree = AVLTree()
         self.correlation_map = {}  # For market basket analysis
+        self._stocks = {} #a dictionary to hold all of the stocks in a key value pair, where the key is the low price, and the value is the stock (like the whole node)
 
     def insert(self, stock_symbol: str, stock_name: str, price: float, low: float):
-        node: StockNode = self._tree.search(stock_symbol)
+        node: StockNode = self._tree.search(low)
 
         if node:
             # Update existing stock price and historical prices
@@ -49,7 +50,7 @@ class StockPriceManager:
         else:
             # Insert a new stock
             new_node = StockNode(stock_symbol=stock_symbol, stock_name=stock_name, price=price, low= low)
-            self._tree.insert(stock_symbol, new_node)
+            self._tree.insert(low, new_node)
 
         self._update_max_price(self._tree._root)
 
@@ -65,8 +66,8 @@ class StockPriceManager:
         node.max_price = max_price
         return node.max_price
 
-    def lookup(self, stock_symbol: str) -> Optional[float]:
-        node: StockNode = self._tree.search(stock_symbol)
+    def lookup(self, price: int) -> Optional[float]:
+        node: StockNode = self._tree.search(price)
         if node:
             return node.price
         return None  # Stock not found
@@ -120,8 +121,8 @@ class StockPriceManager:
         else:
             return (node._value.stock_symbol, node._value.price)  # Found the node at the index
 
-    def calculate_moving_average(self, stock_symbol: str, period: int) -> Optional[float]:
-        node: StockNode = self._tree.search(stock_symbol)
+    def calculate_moving_average(self, price: int, period: int) -> Optional[float]:
+        node: StockNode = self._tree.search(price)
         if node and len(node.historical_prices) >= period:
             return sum(node.historical_prices[-period:]) / period
         return None  # Not enough data for moving average
@@ -140,9 +141,9 @@ class StockPriceManager:
 
         self._tree.insert(stock.low,stock)
 
-        self._tree.insert(stock.high, stock) #, stock
-        # Add stock to AVL tree for sorted access
-        #self._stocks.insert(stock)  # Assuming AVLTree has an insert method
+        self._tree.insert(stock.max_price, stock) #, stock
+        
+        #self._stocks.update(stock) 
 
     def load_from_csv(self, filepath):
         with open(filepath, 'r') as csvfile:
@@ -155,24 +156,45 @@ class StockPriceManager:
                 self.add_stock(stock)
 
     def lookup_stock_price(self, symbol: str) -> Stock:
-        for stock in self._stocks.inorder():  # Assuming inorder() returns sorted stocks
-            if stock.symbol == symbol:
+        for stock in self._tree.inorder():  # Assuming inorder() returns sorted stocks
+            if stock.stock_symbol == symbol:
                 return stock
         return None
 
-    def get_top_k_stocks(self, k: int):
-        return self._stocks.get_top_k(k)  # Assuming get_top_k returns top k stocks based on high price
+    def get_top_k(self, k: int):
+#put this into a list, need to pull out the key (not the value) into a list, order by decending, return top 5
+       list_of_stocks = stocks._tree.inorder()  #inorder() returns a list
+       list_of_stocks.sort(key = lambda s: s.max_price, reverse = True)
+       top_k = list_of_stocks[:k]
+       return top_k
 
+    def get_top_k_stocks(self, k: int):
+        # if self._stocks is None:
+        #     print("No stocks available.")
+        # else:
+
+        print(self._stocks._tree.inorder())
+        return self._stocks.get_top_k(k) #erroring because 'dict' object has no attribute 'get_top_k'
+  
+       
+
+    
     def get_bottom_k_stocks(self, k: int):
-        return self._stocks.get_bottom_k(k)  # Assuming get_bottom_k returns bottom k stocks based on low price
+        return self._stocks.get_bottom_k(k)  
+
+    def get_bottom_k(self, k: int):
+        list_of_stocks = stocks._value ## put this into a list, need to pull out the key (not the value) into a list, order by decending, return top 5
+        list_of_stocks.sort(key = lambda s: s.max_price)
+        bottom_k = list_of_stocks[:k]
+        return bottom_k
 
     def get_stocks_in_price_range(self, low: int, high: int):
         return self._interval_tree.range_query(low, high)
 
     def display_all_stocks(self):
-        stocks = self._stocks.inorder()
+        stocks = self._tree.inorder()
         for stock in stocks:
-            print(f"{stock.symbol} - {stock.name} - {stock.low}-{stock.high}")
+            print(f"{stock.stock_symbol} - {stock.stock_name} - {stock.low}-{stock.max_price}")
 
 
 # Example usage:
@@ -182,7 +204,7 @@ if __name__ == "__main__":
     manager.insert("GOOGL", "Alphabet Inc.", 2800.0, 0)
     manager.insert("AMZN", "Amazon.com Inc.", 3400.0, 0)
 
-    print("Current price of AAPL:", manager.lookup("AAPL"))
+    print("Current price of AAPL:", manager.lookup(150))
     print("Stocks in price range 1000 to 2000:", manager.range_query(1000, 2000))
     
     # Check alerts
@@ -194,7 +216,7 @@ if __name__ == "__main__":
     # Moving average
     manager.insert("AAPL", "Apple Inc.", 145.0, 0)
     manager.insert("AAPL", "Apple Inc.", 155.0, 0)
-    print("AAPL moving average (last 3 prices):", manager.calculate_moving_average("AAPL", 3))
+    print("AAPL moving average (last 3 prices):", manager.calculate_moving_average(150, 3))
     
     # Correlation tracking
     manager.track_correlation("AAPL", "GOOGL")
@@ -203,19 +225,19 @@ if __name__ == "__main__":
     manager.load_from_csv('./stocks/sample_stock_prices.csv')  # Load stocks from CSV
 
     # Display all stocks
-    print("All Stocks:")
-    stock_manager.display_all_stocks()
+    #print("All Stocks:")
+    #manager.display_all_stocks()
 
     # Lookup stock price
     symbol_to_lookup = 'AAPL'
-    stock = stock_manager.lookup_stock_price(symbol_to_lookup)
+    stock = manager.lookup_stock_price(symbol_to_lookup)
     if stock:
-        print(f"\nStock Price Lookup for {symbol_to_lookup}: {stock.low}-{stock.high}")
+        print(f"\nStock Price Lookup for {symbol_to_lookup}: {stock.low}-{stock.max_price}")
     else:
         print(f"\nStock {symbol_to_lookup} not found.")
 
     # Get top-K stocks
-    top_k = stock_manager.get_top_k_stocks(5)
+    top_k = manager.get_top_k_stocks(5)
     print("\nTop-K Stocks:")
     for stock in top_k:
         print(f"{stock.symbol} - {stock.name} - {stock.low}-{stock.high}")

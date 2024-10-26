@@ -32,13 +32,15 @@ class StockNode: #the class of the node I am using
 #     name: str
 #     low: int
 #     high: int
-
+#------------------------------------------------------------------------------------------------
 class StockPriceManager: #creating a class to manage the stocks
     def __init__(self): #intializes the class 
         self._tree = AVLTree() #the class will have an AVL tree assocaited with it
         self.correlation_map = {}  # For market basket analysis
         self._stock_dictionary = {} #a dictionary to hold all of the stocks in a key value pair, where the key is the low price, and the value is the stock (like the whole node)
         self.times_called= 0
+
+
     def insert(self, stock_symbol: str, stock_name: str, current_price: float, low_price: float):
         node: StockNode = self._tree.search(low_price)
         self.times_called +=1
@@ -161,7 +163,7 @@ class StockPriceManager: #creating a class to manage the stocks
                 self.add_stock(stock)
 
     def lookup_stock_price(self, symbol: str) -> Stock:
-        for stock in self._tree.inorder():  # Assuming inorder() returns sorted stocks
+        for stock in self._stock_dictionary: #for some reason stock is 0????
             if stock.stock_symbol == symbol:
                 return stock
         return None
@@ -169,7 +171,7 @@ class StockPriceManager: #creating a class to manage the stocks
     def get_top_k(self, k: int):
 #put this into a list, need to pull out the key (not the value) into a list, order by decending, return top 5
        print("TESTING TESTING TESTING", self._stock_dictionary)
-       list_of_stocks = list(self._stock_dictionary.keys()) #inorder() returns a list
+       list_of_stocks = list(self._stock_dictionary.keys())
        list_of_stocks.sort(reverse = True)
        print("LOOK HERE LOOK HERE", list_of_stocks)
        return list_of_stocks[:k]
@@ -195,7 +197,7 @@ class StockPriceManager: #creating a class to manage the stocks
         return self._interval_tree.range_query(low, high)
 
     def display_all_stocks(self):
-        stocks = self._tree.inorder()
+        stocks = self._tree.inorder()# change this, inorder doesn't do what i thought it did?
         for stock in stocks:
             print(f"{stock.stock_symbol} - {stock.stock_name} - {stock.low}-{stock.max_price}")
 

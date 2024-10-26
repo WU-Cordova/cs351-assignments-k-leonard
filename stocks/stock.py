@@ -192,8 +192,28 @@ class StockPriceManager: #creating a class to manage the stocks
         list_of_stocks.sort()
         return list_of_names [:k]
 
-    def get_stocks_in_price_range(self, low: int, high: int):
-        return self._tree.range_query(low, high)
+    def get_stocks_in_price_range(self, low: float, high: float) -> List[StockNode]:
+        results = []
+    
+        # Use in-order traversal to collect stocks within the price range
+        self._inorder_price_range(self._tree._root, low, high, results)
+    
+        return results
+
+    def _inorder_price_range(self, node: Optional[StockNode], low: float, high: float, results: list):
+        if not node:
+            return
+
+        # Traverse the left subtree
+        self._inorder_price_range(node._left, low, high, results)
+
+        # Check if the current node's price is within the range
+        if low <= node._value.max_price <= high: #was current_price, but it broke, avl node doesn't seem to have a current_price attatched, check for mislabel
+            results.append(node)
+
+        # Traverse the right subtree
+        self._inorder_price_range(node._right, low, high, results)
+
 
     def display_all_stocks(self):
         stocks = self._tree.inorder()# change this, inorder doesn't do what i thought it did?
@@ -257,5 +277,5 @@ if __name__ == "__main__":
     stocks_in_range = manager.get_stocks_in_price_range(low_price, high_price)
     print(f"\nStocks in price range {low_price}-{high_price}:")
     for stock in stocks_in_range:
-        print(f"{stock.symbol} - {stock.name} - {stock.low_price}-{stock.high_price}")
+        print(f"{stock._value.stock_symbol} - {stock._value.stock_name} - {stock._value.low_price}-{stock._value.max_price}")
  

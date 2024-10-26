@@ -38,21 +38,23 @@ class StockPriceManager: #creating a class to manage the stocks
         self._tree = AVLTree() #the class will have an AVL tree assocaited with it
         self.correlation_map = {}  # For market basket analysis
         self._stock_dictionary = {} #a dictionary to hold all of the stocks in a key value pair, where the key is the low price, and the value is the stock (like the whole node)
-
+        self.times_called= 0
     def insert(self, stock_symbol: str, stock_name: str, current_price: float, low_price: float):
         node: StockNode = self._tree.search(low_price)
-
+        self.times_called +=1
+        print(self.times_called)
         if node:
             # Update existing stock price and historical prices
             node.historical_prices.append(current_price)  # Store new price in history
             node.current_price = current_price
             node.max_price = max(node.max_price, current_price)
-            
+            print("Updated Stock Dictionary with {} and {}".format(node.stock_symbol, current_price))
         else:
             # Insert a new stock
             new_node = StockNode(stock_symbol=stock_symbol, stock_name=stock_name, current_price=current_price, low_price= low_price)
             self._tree.insert(low_price, new_node)
             self._stock_dictionary[low_price] = new_node
+            print("Created Entry in Stock Dictionary with {} and {}".format(new_node.stock_symbol, low_price))
 
         self._update_max_price(self._tree._root)
         
@@ -140,7 +142,7 @@ class StockPriceManager: #creating a class to manage the stocks
 
     def add_stock(self, stock: Stock):
         # Add stock to the interval tree
-        print("stock.low is {}, stock: {}".format(stock.low, stock))
+        #print("stock.low is {}, stock: {}".format(stock.low, stock))
 
         self._tree.insert(stock.low,stock)
 
@@ -155,7 +157,7 @@ class StockPriceManager: #creating a class to manage the stocks
             for row in reader:
                 symbol, name, low, high = row[0], row[1], int(row[2]), int(row[3])
                 stock = StockNode(symbol,name, low, high)
-                print(stock)
+                #print(stock)
                 self.add_stock(stock)
 
     def lookup_stock_price(self, symbol: str) -> Stock:
@@ -166,9 +168,10 @@ class StockPriceManager: #creating a class to manage the stocks
 
     def get_top_k(self, k: int):
 #put this into a list, need to pull out the key (not the value) into a list, order by decending, return top 5
+       print("TESTING TESTING TESTING", self._stock_dictionary)
        list_of_stocks = list(self._stock_dictionary.keys()) #inorder() returns a list
        list_of_stocks.sort(reverse = True)
-
+       print("LOOK HERE LOOK HERE", list_of_stocks)
        return list_of_stocks[:k]
 
     def get_top_k_stocks(self, k: int) -> List[StockNode]:
@@ -179,9 +182,6 @@ class StockPriceManager: #creating a class to manage the stocks
         # Retrieve top k from the _tree directly
         return self.get_top_k(k)  # Call the get_top_k method directly
 
-       
-
-    
     def get_bottom_k_stocks(self, k: int):
         return self._stocks.get_bottom_k(k)  
 
@@ -207,7 +207,7 @@ if __name__ == "__main__":
     manager.insert("GOOGL", "Alphabet Inc.", 2800.0, 0)
     manager.insert("AMZN", "Amazon.com Inc.", 3400.0, 0)
 
-    print("Current price of AAPL:", manager.lookup(150))
+    print("Current price of AAPL:", manager.lookup(3400))
     print("Stocks in price range 1000 to 2000:", manager.range_query(1000, 2000))
     
     # Check alerts
@@ -226,7 +226,7 @@ if __name__ == "__main__":
     print("Correlated stocks with AAPL:", manager.find_correlated_stocks("AAPL"))
 
     manager.load_from_csv('./stocks/sample_stock_prices.csv')  # Load stocks from CSV
-
+    print("Successfully Loaded Stocks From CSV")
     # Display all stocks
     #print("All Stocks:")
     #manager.display_all_stocks()

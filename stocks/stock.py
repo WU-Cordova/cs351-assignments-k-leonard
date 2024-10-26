@@ -163,18 +163,17 @@ class StockPriceManager: #creating a class to manage the stocks
                 self.add_stock(stock)
 
     def lookup_stock_price(self, symbol: str) -> Stock:
-        for stock in self._stock_dictionary: #for some reason stock is 0????
+        for price, stock in self._stock_dictionary.items(): #for some reason item is 0????
             if stock.stock_symbol == symbol:
                 return stock
         return None
 
     def get_top_k(self, k: int):
 #put this into a list, need to pull out the key (not the value) into a list, order by decending, return top 5
-       print("TESTING TESTING TESTING", self._stock_dictionary)
        list_of_stocks = list(self._stock_dictionary.keys())
+       list_of_names = list(self._stock_dictionary.values())
        list_of_stocks.sort(reverse = True)
-       print("LOOK HERE LOOK HERE", list_of_stocks)
-       return list_of_stocks[:k]
+       return list_of_names [:k]
 
     def get_top_k_stocks(self, k: int) -> List[StockNode]:
         if not self._stock_dictionary:
@@ -185,16 +184,16 @@ class StockPriceManager: #creating a class to manage the stocks
         return self.get_top_k(k)  # Call the get_top_k method directly
 
     def get_bottom_k_stocks(self, k: int):
-        return self._stocks.get_bottom_k(k)  
+        return self.get_bottom_k(k)  
 
     def get_bottom_k(self, k: int):
-        list_of_stocks = stocks._value ## put this into a list, need to pull out the key (not the value) into a list, order by decending, return top 5
-        list_of_stocks.sort(key = lambda s: s.max_price)
-        bottom_k = list_of_stocks[:k]
-        return bottom_k
+        list_of_stocks = list(self._stock_dictionary.keys())
+        list_of_names = list(self._stock_dictionary.values())
+        list_of_stocks.sort()
+        return list_of_names [:k]
 
     def get_stocks_in_price_range(self, low: int, high: int):
-        return self._interval_tree.range_query(low, high)
+        return self._tree.range_query(low, high)
 
     def display_all_stocks(self):
         stocks = self._tree.inorder()# change this, inorder doesn't do what i thought it did?
@@ -242,20 +241,20 @@ if __name__ == "__main__":
         print(f"\nStock {symbol_to_lookup} not found.")
 
     # Get top-K stocks
-    top_k = manager.get_top_k_stocks(5)
+    top_k_name = manager.get_top_k_stocks(5)
     print("\nTop-K Stocks:")
-    for stock in top_k:
-        print(f"{stock.symbol} - {stock.name} - {stock.low_price}-{stock.high}")
+    for stock in top_k_name:
+        print(f"{stock.stock_symbol} - {stock.stock_name} - {stock.low_price}-{stock.max_price}")
 
     # Get bottom-K stocks
-    bottom_k = stock_manager.get_bottom_k_stocks(5)
+    bottom_k_name = manager.get_bottom_k_stocks(5)
     print("\nBottom-K Stocks:")
-    for stock in bottom_k:
-        print(f"{stock.symbol} - {stock.name} - {stock.low_price}-{stock.high}")
+    for stock in bottom_k_name:
+        print(f"{stock.stock_symbol} - {stock.stock_name} - {stock.low_price}-{stock.max_price}")
 
     # Get stocks in price range
     low_price, high_price = 100, 200
-    stocks_in_range = stock_manager.get_stocks_in_price_range(low_price, high_price)
+    stocks_in_range = manager.get_stocks_in_price_range(low_price, high_price)
     print(f"\nStocks in price range {low_price}-{high_price}:")
     for stock in stocks_in_range:
         print(f"{stock.symbol} - {stock.name} - {stock.low_price}-{stock.high_price}")

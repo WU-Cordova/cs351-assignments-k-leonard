@@ -5,25 +5,25 @@ from datastructures.avltree import AVLNode, AVLTree
 import csv
 #-------------------------------------
 @dataclass
-class StockNode:
-    stock_symbol: str
-    stock_name: str
-    price: float
-    max_price: float = 0
-    low : float = 0
-    height: int = 1
-    historical_prices: List[float] = None  # For storing historical prices
-    size: int = 1  # For percentile calculations
-    left: Optional[StockNode] = None
-    right: Optional[StockNode] = None
+class StockNode: #the class of the node I am using
+    stock_symbol: str #stock symbol is the abbreviation
+    stock_name: str #Stock name is the company name 
+    current_price: float #price is the current price of the stock
+    max_price: float = 0 #the maximum price a stock has been
+    low : float = 0 #the lowest price a stock has been
+    height: int = 1 #height of the tree?
+#    historical_prices: List[float] = None  # a list for later to hopefully implement historical prices
+    size: int = 1  # size of the tree? (percentile calculations)
+    left: Optional[StockNode] = None #left of the node
+    right: Optional[StockNode] = None #right of the node
 
-    def __init__(self, stock_symbol: str, stock_name: str, price: float, low: float):
-        self.stock_symbol = stock_symbol
-        self.stock_name = stock_name
-        self.price = price
-        self.max_price = price
-        self.low = low
-        self.historical_prices = [price]  # Initialize historical prices with the current price
+    def __init__(self, stock_symbol: str, stock_name: str, current_price: float, low_price: float): #initalizes the data class
+        self.stock_symbol = stock_symbol # a stock will have  symbol (aka abbreveation) associated with it
+        self.stock_name = stock_name #a stock will have a name (company name) associated with it
+        self.current_price = current_price #a stock will have a current price assocaiated with it
+        self.max_price = current_price#a stock will have a maximum price assocaited with it
+        self.low_price = low_price #a stock will have a lowest price associated with it
+        self.historical_prices = [current_price]  # Initialize historical prices with the current price
 
 #@dataclass(order=True)
 
@@ -33,26 +33,29 @@ class StockNode:
 #     low: int
 #     high: int
 
-class StockPriceManager:
-    def __init__(self):
-        self._tree = AVLTree()
+class StockPriceManager: #creating a class to manage the stocks
+    def __init__(self): #intializes the class 
+        self._tree = AVLTree() #the class will have an AVL tree assocaited with it
         self.correlation_map = {}  # For market basket analysis
-        self._stocks = {} #a dictionary to hold all of the stocks in a key value pair, where the key is the low price, and the value is the stock (like the whole node)
+        self._stock_dictionary = {} #a dictionary to hold all of the stocks in a key value pair, where the key is the low price, and the value is the stock (like the whole node)
 
-    def insert(self, stock_symbol: str, stock_name: str, price: float, low: float):
-        node: StockNode = self._tree.search(low)
+    def insert(self, stock_symbol: str, stock_name: str, current_price: float, low_price: float):
+        node: StockNode = self._tree.search(low_price)
 
         if node:
             # Update existing stock price and historical prices
-            node.historical_prices.append(price)  # Store new price in history
-            node.price = price
-            node.max_price = max(node.max_price, price)
+            node.historical_prices.append(current_price)  # Store new price in history
+            node.current_price = current_price
+            node.max_price = max(node.max_price, current_price)
+            
         else:
             # Insert a new stock
-            new_node = StockNode(stock_symbol=stock_symbol, stock_name=stock_name, price=price, low= low)
-            self._tree.insert(low, new_node)
+            new_node = StockNode(stock_symbol=stock_symbol, stock_name=stock_name, current_price=current_price, low_price= low_price)
+            self._tree.insert(low_price, new_node)
+            self._stock_dictionary[low_price] = new_node
 
         self._update_max_price(self._tree._root)
+        
 
     def _update_max_price(self, node: Optional[StockNode]):
         left_max = 0
@@ -61,7 +64,7 @@ class StockPriceManager:
         if node._left is not None: 
             left_max = self._update_max_price(node._left)
         right_max = self._update_max_price(node._right)
-        max_price = max(node._value.price, left_max, right_max)
+        max_price = max(node._value.current_price, left_max, right_max)
 
         node.max_price = max_price
         return node.max_price
@@ -72,28 +75,28 @@ class StockPriceManager:
             return node.price
         return None  # Stock not found
 
-    def range_query(self, low: float, high: float) -> List[Tuple[str, float]]:
+    def range_query(self, low_price: float, high: float) -> List[Tuple[str, float]]:
         results = []
-        self._range_query_helper(self._tree._root, low, high, results)
+        self._range_query_helper(self._tree._root, low_price, high, results)
         return results
 
-    def _range_query_helper(self, node: Optional[StockNode], low: float, high: float, results: list):
+    def _range_query_helper(self, node: Optional[StockNode], low_price: float, high: float, results: list):
         if not node:
             return
 
-        if node._value.price >= low:
-            self._range_query_helper(node._left, low, high, results)
+        if node._value.current_price >= low_price:
+            self._range_query_helper(node._left, low_price, high, results)
 
-        if low <= node._value.price <= high:
+        if low_price <= node._value.current_price <= high:
             results.append((node.stock_symbol, node.price))
 
-        if node._value.price <= high:
-            self._range_query_helper(node._right, low, high, results)
+        if node._value.current_price <= high:
+            self._range_query_helper(node._right, low_price, high, results)
 
     def check_alerts(self) -> List[str]:
         alerts = []
         for stock in self._get_all_stocks(self._tree._root):
-            if stock._value.price < 120:  # Example threshold for alert
+            if stock._value.current_price < 120:  # Example threshold for alert
                 alerts.append(f"Alert: {stock.stock_name}'s price has dropped below $120!")
         return alerts
 
@@ -119,7 +122,7 @@ class StockPriceManager:
         elif index > left_size:
             return self._find_percentile_helper(node.right, index - left_size - 1)
         else:
-            return (node._value.stock_symbol, node._value.price)  # Found the node at the index
+            return (node._value.stock_symbol, node._value.current_price)  # Found the node at the index
 
     def calculate_moving_average(self, price: int, period: int) -> Optional[float]:
         node: StockNode = self._tree.search(price)
@@ -163,19 +166,19 @@ class StockPriceManager:
 
     def get_top_k(self, k: int):
 #put this into a list, need to pull out the key (not the value) into a list, order by decending, return top 5
-       list_of_stocks = stocks._tree.inorder()  #inorder() returns a list
-       list_of_stocks.sort(key = lambda s: s.max_price, reverse = True)
-       top_k = list_of_stocks[:k]
-       return top_k
+       list_of_stocks = list(self._stock_dictionary.keys()) #inorder() returns a list
+       list_of_stocks.sort(reverse = True)
 
-    def get_top_k_stocks(self, k: int):
-        # if self._stocks is None:
-        #     print("No stocks available.")
-        # else:
+       return list_of_stocks[:k]
 
-        print(self._stocks._tree.inorder())
-        return self._stocks.get_top_k(k) #erroring because 'dict' object has no attribute 'get_top_k'
-  
+    def get_top_k_stocks(self, k: int) -> List[StockNode]:
+        if not self._stock_dictionary:
+            print("No stocks available.")
+            return []
+        
+        # Retrieve top k from the _tree directly
+        return self.get_top_k(k)  # Call the get_top_k method directly
+
        
 
     
@@ -240,18 +243,18 @@ if __name__ == "__main__":
     top_k = manager.get_top_k_stocks(5)
     print("\nTop-K Stocks:")
     for stock in top_k:
-        print(f"{stock.symbol} - {stock.name} - {stock.low}-{stock.high}")
+        print(f"{stock.symbol} - {stock.name} - {stock.low_price}-{stock.high}")
 
     # Get bottom-K stocks
     bottom_k = stock_manager.get_bottom_k_stocks(5)
     print("\nBottom-K Stocks:")
     for stock in bottom_k:
-        print(f"{stock.symbol} - {stock.name} - {stock.low}-{stock.high}")
+        print(f"{stock.symbol} - {stock.name} - {stock.low_price}-{stock.high}")
 
     # Get stocks in price range
     low_price, high_price = 100, 200
     stocks_in_range = stock_manager.get_stocks_in_price_range(low_price, high_price)
     print(f"\nStocks in price range {low_price}-{high_price}:")
     for stock in stocks_in_range:
-        print(f"{stock.symbol} - {stock.name} - {stock.low}-{stock.high}")
+        print(f"{stock.symbol} - {stock.name} - {stock.low_price}-{stock.high_price}")
  

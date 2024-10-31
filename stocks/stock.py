@@ -38,35 +38,35 @@ class StockPriceManager: #creating a class to manage the stocks
         self._tree = AVLTree() #the class will have an AVL tree assocaited with it
         self.correlation_map = {}  # For market basket analysis
         self._stock_dictionary = {} #a dictionary to hold all of the stocks in a key value pair, where the key is the low price, and the value is the stock (like the whole node)
-        self.times_called= 0
+        self.times_called= 0 #setting up a counter for debug purposes
 
 
-    def insert(self, stock_symbol: str, stock_name: str, current_price: float, low_price: float):
-        node: StockNode = self._tree.search(low_price)
-        self.times_called +=1
-        print(self.times_called)
-        if node:
+    def insert(self, stock_symbol: str, stock_name: str, current_price: float, low_price: float):# an insert function
+        node: StockNode = self._tree.search(current_price) #search the tree for a node with a key of the current price
+        self.times_called +=1 #a counter for debugging purposes
+        print(self.times_called) #printing counter for debugging purposes
+        if node: #if the node exists, we will want to update it
             # Update existing stock price and historical prices
             node.historical_prices.append(current_price)  # Store new price in history
-            node.current_price = current_price
-            node.max_price = max(node.max_price, current_price)
-            print("Updated Stock Dictionary with {} and {}".format(node.stock_symbol, current_price))
-        else:
+            node.current_price = current_price #set the the nodes current price to the newest input
+            node.max_price = max(node.max_price, current_price) #check to see if we need to update the max price if the new current price is greater than the current max
+            print("Updated Stock Dictionary with {} and {}".format(node.stock_symbol, current_price)) #a print statement for debugging
+        else: #if the node doesn't exist, we need to make one
             # Insert a new stock
-            new_node = StockNode(stock_symbol=stock_symbol, stock_name=stock_name, current_price=current_price, low_price= low_price)
-            self._tree.insert(low_price, new_node)
-            self._stock_dictionary[low_price] = new_node
-            print("Created Entry in Stock Dictionary with {} and {}".format(new_node.stock_symbol, low_price))
+            new_node = StockNode(stock_symbol=stock_symbol, stock_name=stock_name, current_price=current_price, low_price= low_price) #creating a new stock, as a stockNode,with the symbol, name of the company, the current price, and the low price
+            self._tree.insert(low_price, new_node)#inserting the new stock we just made into the tree, using the low price as the key
+            self._stock_dictionary[low_price] = new_node#creating an entry into our dictionary, once again using the low price as the key
+            print("Created Entry in Stock Dictionary with {} with the key {}".format(new_node.stock_symbol, low_price))
 
-        self._update_max_price(self._tree._root)
+        self._update_max_price(self._tree._root) #we then want to update the maximum price, although I am unsure if this is the best way to do this
         
 
-    def _update_max_price(self, node: Optional[StockNode]):
-        left_max = 0
-        if not node:
-            return 0
-        if node._left is not None: 
-            left_max = self._update_max_price(node._left)
+    def _update_max_price(self, node: Optional[StockNode]): #a function to update the maximum price found in a tree
+        left_max = 0 #always setting the left max to be 0, DO I WANT TO DO THAT HERE OR SHOULD I SET THIS OUTSIDE THE FUNCTION TO PREVENT OVERWRITING
+        if not node: #if no node exists
+            return 0 # don't bother, move on
+        if node._left is not None: #if a node DOES exist
+            left_max = self._update_max_price(node._left) #update the the max price by looking at the left node, OH NO I THINK I HAVE BEEN OVERWRITING IT?!?!
         right_max = self._update_max_price(node._right)
         max_price = max(node._value.current_price, left_max, right_max)
 
@@ -76,7 +76,7 @@ class StockPriceManager: #creating a class to manage the stocks
     def lookup(self, price: int) -> Optional[float]:
         node: StockNode = self._tree.search(price)
         if node:
-            return node.price
+            return node.current_price
         return None  # Stock not found
 
     def range_query(self, low_price: float, high: float) -> List[Tuple[str, float]]:

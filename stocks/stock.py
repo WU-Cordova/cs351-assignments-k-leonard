@@ -60,30 +60,30 @@ class StockPriceManager: #creating a class to manage the stocks
 
         self._update_max_price(self._tree._root) #we then want to update the maximum price, although I am unsure if this is the best way to do this
         
-
+####COME BACK TO LOOK OVER THIS AND FIGURE OUT WHAT I'M DOING HERE
     def _update_max_price(self, node: Optional[StockNode]): #a function to update the maximum price found in a tree
         left_max = 0 #always setting the left max to be 0, DO I WANT TO DO THAT HERE OR SHOULD I SET THIS OUTSIDE THE FUNCTION TO PREVENT OVERWRITING
         if not node: #if no node exists
             return 0 # don't bother, move on
         if node._left is not None: #if a node DOES exist
             left_max = self._update_max_price(node._left) #update the the max price by looking at the left node, OH NO I THINK I HAVE BEEN OVERWRITING IT?!?!
-        right_max = self._update_max_price(node._right)
+        right_max = self._update_max_price(node._right) #I think i'm confusing myself here, will come back
         max_price = max(node._value.current_price, left_max, right_max)
 
         node.max_price = max_price
         return node.max_price
-
-    def lookup(self, price: int) -> Optional[float]:
-        node: StockNode = self._tree.search(price)
+#---------------------------------------------------------------------------------------------------------------------------
+    def lookup(self, price: int) -> Optional[float]: #a look up function to find stocks with a certain price
+        node: StockNode = self._tree.search(price) # 
         if node:
             return node.current_price
         return None  # Stock not found
-
+#---------------------------------------------------------------------------------------------------------------------------
     def range_query(self, low_price: float, high: float) -> List[Tuple[str, float]]:
         results = []
         self._range_query_helper(self._tree._root, low_price, high, results)
         return results
-
+#---------------------------------------------------------------------------------------------------------------------------
     def _range_query_helper(self, node: Optional[StockNode], low_price: float, high: float, results: list):
         if not node:
             return
@@ -96,25 +96,25 @@ class StockPriceManager: #creating a class to manage the stocks
 
         if node._value.current_price <= high:
             self._range_query_helper(node._right, low_price, high, results)
-
+#---------------------------------------------------------------------------------------------------------------------------
     def check_alerts(self) -> List[str]:
         alerts = []
         for stock in self._get_all_stocks(self._tree._root):
             if stock._value.current_price < 120:  # Example threshold for alert
                 alerts.append(f"Alert: {stock.stock_name}'s price has dropped below $120!")
         return alerts
-
+#---------------------------------------------------------------------------------------------------------------------------
     def _get_all_stocks(self, node: Optional[StockNode]) -> List[StockNode]:
         if not node:
             return []
         return (self._get_all_stocks(node._left) +
                 [node] +
                 self._get_all_stocks(node._right))
-
+#---------------------------------------------------------------------------------------------------------------------------
     def find_percentile(self, percentile: float) -> Optional[Tuple[str, float]]:
         target_index = int(percentile / 100 * self._tree._root._value.size)  # Convert to index
         return self._find_percentile_helper(self._tree._root, target_index)
-
+#---------------------------------------------------------------------------------------------------------------------------
     def _find_percentile_helper(self, node: Optional[StockNode], index: int) -> Optional[Tuple[str, float]]:
         if not node:
             return None
@@ -127,21 +127,21 @@ class StockPriceManager: #creating a class to manage the stocks
             return self._find_percentile_helper(node.right, index - left_size - 1)
         else:
             return (node._value.stock_symbol, node._value.current_price)  # Found the node at the index
-
+#---------------------------------------------------------------------------------------------------------------------------
     def calculate_moving_average(self, price: int, period: int) -> Optional[float]:
         node: StockNode = self._tree.search(price)
         if node and len(node.historical_prices) >= period:
             return sum(node.historical_prices[-period:]) / period
         return None  # Not enough data for moving average
-
+#---------------------------------------------------------------------------------------------------------------------------
     def track_correlation(self, stock_symbol: str, correlated_stock_symbol: str):
         if stock_symbol not in self.correlation_map:
             self.correlation_map[stock_symbol] = []
         self.correlation_map[stock_symbol].append(correlated_stock_symbol)
-
+#---------------------------------------------------------------------------------------------------------------------------
     def find_correlated_stocks(self, stock_symbol: str) -> List[str]:
         return self.correlation_map.get(stock_symbol, [])
-
+#---------------------------------------------------------------------------------------------------------------------------
     def add_stock(self, stock: Stock):
         # Add stock to the interval tree
         #print("stock.low is {}, stock: {}".format(stock.low, stock))
@@ -151,7 +151,7 @@ class StockPriceManager: #creating a class to manage the stocks
         self._tree.insert(stock.max_price, stock) #, stock
         
         #self._stocks.update(stock) 
-
+#---------------------------------------------------------------------------------------------------------------------------
     def load_from_csv(self, filepath):
         with open(filepath, 'r') as csvfile:
             reader = csv.reader(csvfile)
@@ -161,20 +161,20 @@ class StockPriceManager: #creating a class to manage the stocks
                 stock = StockNode(symbol,name, low, high)
                 #print(stock)
                 self.add_stock(stock)
-
+#---------------------------------------------------------------------------------------------------------------------------
     def lookup_stock_price(self, symbol: str) -> Stock:
         for price, stock in self._stock_dictionary.items(): #for some reason item is 0????
             if stock.stock_symbol == symbol:
                 return stock
         return None
-
+#---------------------------------------------------------------------------------------------------------------------------
     def get_top_k(self, k: int):
 #put this into a list, need to pull out the key (not the value) into a list, order by decending, return top 5
        list_of_stocks = list(self._stock_dictionary.keys())
        list_of_names = list(self._stock_dictionary.values())
        list_of_stocks.sort(reverse = True)
        return list_of_names [:k]
-
+#---------------------------------------------------------------------------------------------------------------------------
     def get_top_k_stocks(self, k: int) -> List[StockNode]:
         if not self._stock_dictionary:
             print("No stocks available.")
@@ -182,16 +182,16 @@ class StockPriceManager: #creating a class to manage the stocks
         
         # Retrieve top k from the _tree directly
         return self.get_top_k(k)  # Call the get_top_k method directly
-
+#---------------------------------------------------------------------------------------------------------------------------
     def get_bottom_k_stocks(self, k: int):
         return self.get_bottom_k(k)  
-
+#---------------------------------------------------------------------------------------------------------------------------
     def get_bottom_k(self, k: int):
         list_of_stocks = list(self._stock_dictionary.keys())
         list_of_names = list(self._stock_dictionary.values())
         list_of_stocks.sort()
         return list_of_names [:k]
-
+#---------------------------------------------------------------------------------------------------------------------------
     def get_stocks_in_price_range(self, low: float, high: float) -> List[StockNode]:
         results = []
     
@@ -199,7 +199,7 @@ class StockPriceManager: #creating a class to manage the stocks
         self._inorder_price_range(self._tree._root, low, high, results)
     
         return results
-
+#---------------------------------------------------------------------------------------------------------------------------
     def _inorder_price_range(self, node: Optional[StockNode], low: float, high: float, results: list):
         if not node:
             return
@@ -213,13 +213,13 @@ class StockPriceManager: #creating a class to manage the stocks
 
         # Traverse the right subtree
         self._inorder_price_range(node._right, low, high, results)
-
+#---------------------------------------------------------------------------------------------------------------------------
 
     def display_all_stocks(self):
         stocks = self._tree.inorder()# change this, inorder doesn't do what i thought it did?
         for stock in stocks:
             print(f"{stock.stock_symbol} - {stock.stock_name} - {stock.low}-{stock.max_price}")
-
+#---------------------------------------------------------------------------------------------------------------------------
 
 # Example usage:
 if __name__ == "__main__":
